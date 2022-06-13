@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  web:
+      build: .
+      ports:
+        - "8111:8111"
+      volumes:
+        - .:/usr/src/app
+      links:
+        - mongo
+        - redis
+      environment:
+        - REDIS_URI=redis://cache
+        - DB_URI=mongodb://database
+      env_file:
+        - ./.env
+  mongo:
+    image: "mongo"
+    container_name: mongo
+    expose:
+      - "27017"
+    volumes:
+      - mongo:/data/db
+    ports:
+      - '6000:27017'
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+volumes:
+  mongo:
+  redis:
